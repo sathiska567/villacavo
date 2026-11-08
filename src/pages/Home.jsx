@@ -24,7 +24,7 @@ export default function Home() {
       <Testimonials />
       <Location />
       <GalleryStrip />
-      <CtaBand image={images.valley} />
+      <CtaBand image={images.jacuzzi} />
     </>
   )
 }
@@ -66,11 +66,11 @@ function FullSlider({ slides, interval = 6000, active: run = true, className = '
 }
 
 const heroSlides = [
-  { src: images.hero, alt: 'Mist rolling over the mountains near Haputale' },
-  { src: images.villa, alt: 'Villa Cavo' },
-  { src: images.mist, alt: 'Sunrise above the clouds' },
-  { src: images.suite, alt: 'Misty Peak Suite' },
-  { src: images.valley, alt: 'The Haputale valley' },
+  { src: images.aerial, alt: 'Villa Cavo in the forest above Haputale' },
+  { src: images.villaDusk, alt: 'Villa Cavo at dusk' },
+  { src: images.jacuzzi, alt: 'Hot tub and deck at sunset' },
+  { src: images.suiteLiving, alt: 'Misty Peak Suite' },
+  { src: images.rooftopSunset, alt: 'Rooftop view over the hills' },
 ]
 
 /** Typewriter: reveals letters one by one with a blinking caret. Untyped letters stay
@@ -243,9 +243,9 @@ function Welcome() {
         <div className="container-luxe grid items-center gap-16 lg:grid-cols-12 lg:gap-20">
           {/* photo composition */}
           <div className="relative pb-12 pr-8 sm:pb-20 sm:pr-16 lg:col-span-6">
-            <CurtainImg src={images.villa2} alt="Villa Cavo terrace" className="aspect-square w-full" />
+            <CurtainImg src={images.walkway} alt="Villa Cavo walkway" className="aspect-square w-full" />
             <Reveal delay={0.3} className="absolute bottom-0 right-0 w-[45%] border-[6px] border-cream shadow-2xl sm:border-8">
-              <Img src={images.tea} alt="Ceylon tea" className="aspect-square w-full object-cover" />
+              <Img src={images.bedroomDetail} alt="Teak wardrobe and clay vase" className="aspect-square w-full object-cover" />
             </Reveal>
             <Reveal delay={0.45} className="absolute -left-3 top-6 bg-terra-500 px-4 py-3 text-white shadow-xl sm:-left-6 sm:top-8 sm:px-7 sm:py-5">
               <p className="font-caps text-[9px] uppercase tracking-[0.25em] text-white/80 sm:text-[10px] sm:tracking-[0.3em]">Uva Highlands</p>
@@ -290,7 +290,7 @@ function Welcome() {
       {/* full-screen photo */}
       <section className="relative">
         <ParallaxImg
-          src={images.villa}
+          src={images.villaDusk2}
           alt="Villa Cavo"
           className="h-[62svh] min-h-[420px] sm:h-[100svh] sm:min-h-[520px]"
           strength={isDesktop ? 120 : 40}
@@ -523,7 +523,7 @@ function Services() {
 function MistQuote() {
   return (
     <section className="relative overflow-hidden">
-      <ParallaxImg src={images.mist} alt="" className="h-[90vh] min-h-[560px]" strength={140} />
+      <ParallaxImg src={images.rooftopSunset} alt="" className="h-[90vh] min-h-[560px]" strength={140} />
       <div className="absolute inset-0 bg-ink/35" />
       {/* drifting mist layers */}
       <div className="pointer-events-none absolute inset-x-[-20%] bottom-0 h-1/2 animate-drift bg-gradient-to-t from-white/50 via-white/10 to-transparent will-change-transform" />
@@ -827,7 +827,7 @@ function Location() {
   return (
     <section className="relative overflow-hidden bg-white lg:grid lg:min-h-screen lg:grid-cols-2">
       <div className="relative h-[100svh] min-h-[480px] lg:h-auto">
-        <ParallaxImg src={images.landscape} alt="Haputale landscape" className="!absolute inset-0 h-full" strength={80} />
+        <ParallaxImg src={images.aerial} alt="Villa Cavo from above" className="!absolute inset-0 h-full" strength={80} />
       </div>
       <div className="flex items-center px-5 py-24 sm:px-8 lg:px-16 lg:py-28 xl:px-24">
         <div className="w-full max-w-xl">

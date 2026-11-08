@@ -23,7 +23,7 @@ export default function Experiences() {
         eyebrow="Experiences & Services"
         title={['Moments', 'worth the climb']}
         text="Sunrise viewpoints, tea trails, sacred monasteries and Ayurvedic rituals — curated by our hosts and tailored to you."
-        image={images.hike}
+        image={images.rooftopSunset}
       />
 
       {/* Filterable experiences */}
@@ -80,7 +80,7 @@ export default function Experiences() {
       <section className="bg-cream py-24 sm:py-32">
         <div className="container-luxe grid items-center gap-16 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <CurtainImg src={images.spa} alt="Ayurvedic spa" className="arch aspect-[4/5] max-w-lg" />
+            <CurtainImg src={images.jacuzzi} alt="Hot tub at sunset" className="arch aspect-[4/5] max-w-lg" />
           </div>
           <div className="lg:col-span-6">
             <Eyebrow>Wellness</Eyebrow>
@@ -139,13 +139,13 @@ export default function Experiences() {
             </Reveal>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Reveal><Img src={images.dining2} alt="" className="arch aspect-[3/4] w-full object-cover" /></Reveal>
-            <Reveal delay={0.15}><Img src={images.pool} alt="" className="mt-12 aspect-[3/4] w-full object-cover" /></Reveal>
+            <Reveal><Img src={images.dining} alt="" className="arch aspect-[3/4] w-full object-cover" /></Reveal>
+            <Reveal delay={0.15}><Img src={images.rooftopBar} alt="" className="mt-12 aspect-[3/4] w-full object-cover" /></Reveal>
           </div>
         </div>
       </section>
 
-      <CtaBand image={images.waterfall} title={['Let us plan', 'your journey']} />
+      <CtaBand image={images.aerial} title={['Let us plan', 'your journey']} />
     </>
   )
 }

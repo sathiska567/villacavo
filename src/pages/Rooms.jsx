@@ -19,7 +19,7 @@ export default function Rooms() {
         eyebrow="Rooms & Suites"
         title={['Rest in', 'quiet luxury']}
         text="Each of our suites is a private world — warm timber, soft linens, a fireplace for misty evenings, and views that change with every hour."
-        image={images.living}
+        image={images.suiteLiving}
         square
       />
 
@@ -63,7 +63,7 @@ export default function Rooms() {
         </div>
       </section>
 
-      <CtaBand image={images.bedroom} title={['Find your', 'perfect suite']} />
+      <CtaBand image={images.bedroomView} title={['Find your', 'perfect suite']} />
     </>
   )
 }

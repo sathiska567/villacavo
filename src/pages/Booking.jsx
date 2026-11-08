@@ -82,7 +82,7 @@ Message: ${form.notes || '-'}`
 
             <Step n="02" title="Suite of interest">
               <div className="grid gap-4 sm:grid-cols-2">
-                {[{ slug: 'any', name: 'Any suite', guests: 'Our hosts will suggest the best fit', image: images.villa }, ...rooms].map((r) => (
+                {[{ slug: 'any', name: 'Any suite', guests: 'Our hosts will suggest the best fit', image: images.villaDusk }, ...rooms].map((r) => (
                   <label
                     key={r.slug}
                     className={`group relative flex cursor-pointer items-center gap-4 border p-3 transition-all ${form.room === r.slug ? 'border-terra-500 bg-terra-50' : 'border-ink/10 hover:border-terra-300'}`}
@@ -139,7 +139,7 @@ Message: ${form.notes || '-'}`
               <div className="overflow-hidden border border-ink/10 bg-cream">
                 <AnimatePresence mode="wait">
                   <motion.div key={form.room} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-                    <Img src={room ? room.image : images.villa} alt="" className="aspect-[16/10] w-full object-cover" />
+                    <Img src={room ? room.image : images.villaDusk} alt="" className="aspect-[16/10] w-full object-cover" />
                   </motion.div>
                 </AnimatePresence>
                 <div className="p-6 sm:p-8">

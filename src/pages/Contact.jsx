@@ -37,7 +37,7 @@ export default function Contact() {
         eyebrow="Contact Us"
         title={['We’d love', 'to hear from you']}
         text="Whether you’re planning a getaway, a celebration or simply have a question, our team is here to help."
-        image={images.cabin}
+        image={images.verandaEvening}
       />
 
       <section className="relative overflow-hidden bg-white py-20">

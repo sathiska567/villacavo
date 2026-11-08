@@ -24,7 +24,7 @@ export default function About() {
         eyebrow="Our Story"
         title={['A home', 'among the clouds']}
         text="Villa Cavo was born from a love of the hill country — its silence, its seasons and its people. This is our story."
-        images={[images.villa, images.cabin]}
+        images={[images.villaDusk, images.verandaEvening]}
       />
 
       {/* Intro */}
@@ -45,7 +45,7 @@ export default function About() {
             </Reveal>
           </div>
           <div className="lg:col-span-6">
-            <CurtainImg src={images.villa2} alt="Villa exterior" className="aspect-square w-full" />
+            <CurtainImg src={images.verandaDusk} alt="Villa veranda at dusk" className="aspect-square w-full" />
           </div>
         </div>
       </section>
@@ -71,7 +71,7 @@ export default function About() {
 
       {/* Big statement */}
       <section className="relative">
-        <ParallaxImg src={images.forest} alt="" className="h-[70vh] min-h-[460px]" strength={100} />
+        <ParallaxImg src={images.aerial} alt="" className="h-[70vh] min-h-[460px]" strength={100} />
         <div className="absolute inset-0 bg-ink/45" />
         <div className="absolute inset-0 flex items-center">
           <div className="container-luxe text-center text-white">
@@ -105,7 +105,7 @@ export default function About() {
       {/* Haputale */}
       <section className="bg-cream py-24 sm:py-32">
         <div className="container-luxe grid items-center gap-16 lg:grid-cols-2">
-          <CurtainImg src={images.mist} alt="Haputale mountains" className="aspect-[5/4]" />
+          <CurtainImg src={images.rooftopSunset} alt="Haputale mountains from the rooftop" className="aspect-[5/4]" />
           <div>
             <Eyebrow>Haputale, Sri Lanka</Eyebrow>
             <MaskText lines={['Where the', 'hill country ends']} className="mt-5 text-4xl leading-[1.05] text-ink sm:text-5xl lg:text-6xl" />
@@ -140,7 +140,7 @@ export default function About() {
         </Reveal>
       </section>
 
-      <CtaBand image={images.valley} />
+      <CtaBand image={images.jacuzzi} />
     </>
   )
 }

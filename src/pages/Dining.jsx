@@ -45,8 +45,8 @@ export default function Dining() {
             />
           </div>
           <div className="grid grid-cols-2 gap-4 lg:col-span-7">
-            <CurtainImg src={images.food} alt="Chef's plate" className="aspect-[3/4]" />
-            <CurtainImg src={images.tea} alt="Ceylon tea" className="arch mt-16 aspect-[3/4]" delay={0.2} />
+            <CurtainImg src={images.dining} alt="Candlelit dinner table" className="aspect-[3/4]" />
+            <CurtainImg src={images.jacuzzi} alt="Sunset drinks on the deck" className="arch mt-16 aspect-[3/4]" delay={0.2} />
           </div>
         </div>
       </section>
@@ -99,9 +99,9 @@ export default function Dining() {
           <SectionHeading center eyebrow="Where to dine" title="Every corner, a table" />
           <div className="mt-16 grid gap-10 md:grid-cols-3">
             {[
-              { t: 'The Fireside Room', d: 'Candlelit dinners beside the crackling hearth on cool highland nights.', img: images.dining2 },
-              { t: 'The Garden Lawn', d: 'Breakfast and high tea in the open air, with mist rising from the valley.', img: images.coffee },
-              { t: 'The Ridge Terrace', d: 'Private sunset dinners for two, high above the Haputale gap.', img: images.valley },
+              { t: 'The Fireside Room', d: 'Candlelit dinners beside the crackling hearth on cool highland nights.', img: images.dining },
+              { t: 'The Rooftop Lounge', d: 'Breakfast and high tea in the open air, with mist rising from the valley.', img: images.rooftopBar },
+              { t: 'The Ridge Terrace', d: 'Private sunset dinners for two, high above the Haputale gap.', img: images.rooftopSunset },
             ].map((v, i) => (
               <Reveal key={v.t} delay={i * 0.12} className="group">
                 <div className="overflow-hidden">
@@ -116,14 +116,14 @@ export default function Dining() {
       </section>
 
       <section className="relative">
-        <ParallaxImg src={images.tea} alt="" className="h-[60vh] min-h-[400px]" />
+        <ParallaxImg src={images.aerial} alt="" className="h-[60vh] min-h-[400px]" />
         <div className="absolute inset-0 bg-ink/45" />
         <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-white">
           <MaskText lines={['“Tea is the soul', 'of these hills.”']} className="font-display text-4xl italic sm:text-6xl" />
         </div>
       </section>
 
-      <CtaBand image={images.dining} title={['Plan a', 'private dinner']} />
+      <CtaBand image={images.rooftopBar} title={['Plan a', 'private dinner']} />
     </>
   )
 }

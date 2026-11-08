@@ -31,7 +31,7 @@ export default function Gallery() {
         eyebrow="Gallery"
         title={['Glimpses of', 'Villa Cavo']}
         text="Mist-wrapped mornings, golden evenings and every quiet moment in between."
-        image={images.landscape}
+        image={images.villaDusk2}
       />
 
       <section className="relative overflow-hidden bg-white py-20 sm:py-28">
@@ -119,7 +119,7 @@ export default function Gallery() {
         )}
       </AnimatePresence>
 
-      <CtaBand image={images.mist} />
+      <CtaBand image={images.rooftopSunset} />
     </>
   )
 }
