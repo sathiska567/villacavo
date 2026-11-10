@@ -208,7 +208,9 @@ function Bird({ top, delay, scale, duration, color, every }) {
           stroke={color}
           strokeWidth="2.2"
           strokeLinecap="round"
-          animate={{ d: ['M2 12 Q10 1 20 12 Q30 1 38 12', 'M2 6 Q10 16 20 12 Q30 16 38 6'] }}
+          d="M2 12 Q10 1 20 12 Q30 1 38 12"
+          style={{ transformBox: 'fill-box', originY: 1 }}
+          animate={{ scaleY: [1, -0.5] }}
           transition={{ duration: 0.4, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }}
         />
       </svg>

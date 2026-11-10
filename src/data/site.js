@@ -1,7 +1,8 @@
 // ---------------------------------------------------------------------------
-// Villa Cavo — site content
-// Everything editable lives here: contact details, images, rooms, experiences.
-// Photos live in /public/images.
+// Villa Cavo — default site content
+// These are the built-in defaults. Anything published from the admin panel
+// (/admin) is layered on top of them at runtime, so edits made there win.
+// Built-in photos live in /public/images; uploaded photos live in Vercel Blob.
 // ---------------------------------------------------------------------------
 
 const img = (name) => `/images/${name}.jpg`

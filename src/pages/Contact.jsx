@@ -2,18 +2,13 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PageHero, Reveal, SectionHeading, Eyebrow, ease } from '../components/ui'
 import Icon from '../components/Icon'
-import { images, contact } from '../data/site'
-
-const faqs = [
-  { q: 'How do I get to Villa Cavo?', a: 'Haputale is around 5–6 hours by road from Colombo airport, or a scenic train ride from Kandy (approx. 5 hrs) or Ella (approx. 1 hr). We gladly arrange private chauffeured transfers.' },
-  { q: 'What is the best time to visit?', a: 'Haputale is lovely year-round. January to April generally brings the clearest mornings and best views; the misty months have their own magical atmosphere.' },
-  { q: 'Is breakfast included?', a: 'Yes — a full Sri Lankan or continental breakfast is included with every stay. Lunch, high tea and dinner can be added.' },
-  { q: 'Do you cater to dietary requirements?', a: 'Absolutely. Let us know in advance and our chef will prepare vegetarian, vegan, gluten-free or allergy-friendly menus.' },
-  { q: 'What should I pack?', a: 'Evenings can be cool (12–16°C), so bring a warm layer, comfortable walking shoes and a light rain jacket.' },
-]
+import { useContent, usePage, lines } from '../lib/content'
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'General enquiry', message: '' })
+  const { contact } = useContent()
+  const { hero, cards: cardCopy, form: formCopy, faq } = usePage('contact')
+  const subjects = lines(formCopy.subjects)
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: subjects[0] || 'General enquiry', message: '' })
   const [sent, setSent] = useState(false)
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value })
 
@@ -25,21 +20,18 @@ export default function Contact() {
   }
 
   const cards = [
-    { icon: 'phone', t: 'Call us', v: contact.phone, href: `tel:${contact.phone.replace(/\s/g, '')}` },
-    { icon: 'mail', t: 'Email', v: contact.email, href: `mailto:${contact.email}` },
-    { icon: 'pin', t: 'Visit', v: 'Haputale, Sri Lanka', href: contact.mapLink },
-    { icon: 'clock', t: 'Reception', v: 'Open 24 hours', href: null },
-  ]
+    { icon: 'phone', t: cardCopy.callLabel, v: contact.phone, href: `tel:${contact.phone.replace(/\s/g, '')}` },
+    { icon: 'mail', t: cardCopy.emailLabel, v: contact.email, href: `mailto:${contact.email}` },
+    { icon: 'pin', t: cardCopy.visitLabel, v: cardCopy.visitText, href: contact.mapLink },
+    { icon: 'clock', t: cardCopy.hoursLabel, v: cardCopy.hoursText, href: null },
+  ].filter((c) => c.v)
+  const [thanksBefore, thanksAfter = ''] = String(formCopy.thanksText || '').split('{email}')
 
   return (
     <>
-      <PageHero
-        eyebrow="Contact Us"
-        title={['We’d love', 'to hear from you']}
-        text="Whether you’re planning a getaway, a celebration or simply have a question, our team is here to help."
-        image={images.verandaEvening}
-      />
+      {!hero.hidden && <PageHero eyebrow={hero.eyebrow} title={lines(hero.title)} text={hero.text} image={hero.image} />}
 
+      {!cardCopy.hidden && (
       <section className="relative overflow-hidden bg-white py-20">
         <div className="container-luxe">
         <div className="grid grid-cols-2 gap-px border border-ink/10 bg-ink/10 lg:grid-cols-4">
@@ -52,7 +44,7 @@ export default function Contact() {
               </>
             )
             return (
-              <Reveal key={c.t} delay={i * 0.08} className="bg-white">
+              <Reveal key={i} delay={i * 0.08} className="bg-white">
                 {c.href ? (
                   <a href={c.href} target={c.icon === 'pin' ? '_blank' : undefined} rel="noreferrer" className="block h-full p-5 transition-colors hover:bg-cream sm:p-8">{Inner}</a>
                 ) : (
@@ -64,16 +56,18 @@ export default function Contact() {
         </div>
         </div>
       </section>
+      )}
 
+      {!formCopy.hidden && (
       <section className="relative overflow-hidden bg-white pb-24 sm:pb-32">
         <div className="container-luxe grid gap-16 lg:grid-cols-12">
           <div className="lg:col-span-6">
-            <SectionHeading eyebrow="Send a message" title={['Begin the', 'conversation']} />
+            <SectionHeading eyebrow={formCopy.eyebrow} title={lines(formCopy.title)} />
             <AnimatePresence mode="wait">
               {sent ? (
                 <motion.div key="ok" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-12 border border-terra-500/30 bg-terra-50 p-10">
                   <h3 className="text-3xl text-ink">Thank you, {form.name.split(' ')[0] || 'friend'}.</h3>
-                  <p className="mt-3 text-[16px] text-ink-soft">Your email app should have opened with your message. If not, write to us at <a className="text-terra-500" href={`mailto:${contact.email}`}>{contact.email}</a>. We usually reply within a few hours.</p>
+                  <p className="mt-3 text-[16px] text-ink-soft">{thanksBefore}{formCopy.thanksText?.includes('{email}') && <a className="text-terra-500" href={`mailto:${contact.email}`}>{contact.email}</a>}{thanksAfter}</p>
                   <button onClick={() => setSent(false)} className="btn-outline mt-8">Send another</button>
                 </motion.div>
               ) : (
@@ -83,12 +77,12 @@ export default function Contact() {
                   <Field label="Phone"><input value={form.phone} onChange={set('phone')} className="input-luxe" placeholder="+94 ..." /></Field>
                   <Field label="Subject">
                     <select value={form.subject} onChange={set('subject')} className="input-luxe">
-                      {['General enquiry', 'Reservations', 'Celebrations & events', 'Transfers & tours', 'Press'].map((s) => <option key={s}>{s}</option>)}
+                      {subjects.map((s) => <option key={s}>{s}</option>)}
                     </select>
                   </Field>
                   <Field label="Message" className="sm:col-span-2"><textarea required rows={5} value={form.message} onChange={set('message')} className="input-luxe resize-none" placeholder="How can we help?" /></Field>
                   <div className="sm:col-span-2">
-                    <button className="btn-primary w-full sm:w-auto">Send message</button>
+                    <button className="btn-primary w-full sm:w-auto">{formCopy.buttonLabel}</button>
                   </div>
                 </motion.form>
               )}
@@ -108,17 +102,20 @@ export default function Contact() {
           </div>
         </div>
       </section>
+      )}
 
+      {!faq.hidden && (
       <section className="bg-terra-500 py-24 sm:py-32">
         <div className="container-luxe grid gap-16 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <SectionHeading light eyebrow="FAQ" title={['Good to', 'know']} />
+            <SectionHeading light eyebrow={faq.eyebrow} title={lines(faq.title)} />
           </div>
           <div className="lg:col-span-8">
-            <Faq />
+            <Faq faqs={faq.items || []} />
           </div>
         </div>
       </section>
+      )}
     </>
   )
 }
@@ -132,12 +129,12 @@ function Field({ label, children, className = '' }) {
   )
 }
 
-function Faq() {
+function Faq({ faqs }) {
   const [open, setOpen] = useState(0)
   return (
     <div className="border-t border-white/20">
       {faqs.map((f, i) => (
-        <Reveal key={f.q} delay={i * 0.05} className="border-b border-white/20">
+        <Reveal key={i} delay={i * 0.05} className="border-b border-white/20">
           <button onClick={() => setOpen(open === i ? -1 : i)} className="flex w-full items-center justify-between gap-6 py-6 text-left" aria-expanded={open === i}>
             <span className="font-display text-2xl text-white sm:text-3xl">{f.q}</span>
             <motion.span animate={{ rotate: open === i ? 45 : 0 }} className="text-3xl font-light text-white">+</motion.span>

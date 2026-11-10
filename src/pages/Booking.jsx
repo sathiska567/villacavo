@@ -3,12 +3,13 @@ import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Reveal, Img, Eyebrow, MaskText } from '../components/ui'
 import Icon from '../components/Icon'
-import { rooms, contact, images } from '../data/site'
+import { useContent, usePage, lines, fill } from '../lib/content'
 
 // Online booking calendar is not offered yet — guests send an enquiry by WhatsApp or email.
-const interests = ['Lipton’s Seat sunrise tour', 'Tea estate walk', 'Private candlelit dinner', 'Honeymoon setup', 'Celebration / event']
-
 export default function Booking() {
+  const { rooms, contact } = useContent()
+  const { intro, form: copy } = usePage('booking')
+  const interests = lines(copy.interests)
   const [params] = useSearchParams()
   const [form, setForm] = useState({
     room: params.get('room') || 'any',
@@ -26,9 +27,9 @@ export default function Booking() {
   const toggle = (x) =>
     setForm({ ...form, interests: form.interests.includes(x) ? form.interests.filter((e) => e !== x) : [...form.interests, x] })
 
-  const room = rooms.find((r) => r.slug === form.room)
+  const room = rooms.find((r) => r.slug && r.slug === form.room)
   const message = `Hello Villa Cavo, I would like to make an enquiry.
-Suite: ${room ? room.name : 'Any suite'}
+Suite: ${room ? room.name : copy.anyRoomName}
 Guests: ${form.guests}
 Preferred dates: ${form.dates || 'Flexible'}
 Interested in: ${form.interests.join(', ') || '-'}
@@ -55,19 +56,16 @@ Message: ${form.notes || '-'}`
     <section className="relative min-h-screen overflow-hidden bg-white pb-24 pt-32 sm:pt-40">
       <div className="container-luxe">
         <div className="max-w-3xl">
-          <Reveal><Eyebrow>Enquiries</Eyebrow></Reveal>
-          <MaskText as="h1" lines={['Plan your', 'stay with us']} className="mt-6 text-5xl leading-[0.95] text-ink sm:text-7xl" />
+          <Reveal><Eyebrow>{intro.eyebrow}</Eyebrow></Reveal>
+          <MaskText as="h1" lines={lines(intro.title)} className="mt-6 text-5xl leading-[0.95] text-ink sm:text-7xl" />
           <Reveal delay={0.2}>
-            <p className="mt-6 max-w-lg text-[16px] leading-relaxed text-ink-soft">
-              Tell us a little about your trip and send it to our hosts by WhatsApp or email. We will reply personally
-              with availability and everything you need to know.
-            </p>
+            <p className="mt-6 max-w-lg text-[16px] leading-relaxed text-ink-soft">{intro.text}</p>
           </Reveal>
         </div>
 
         <form onSubmit={(e) => e.preventDefault()} className="mt-16 grid gap-16 lg:grid-cols-12">
           <div className="space-y-14 lg:col-span-7">
-            <Step n="01" title="Your stay">
+            <Step n="01" title={copy.step1}>
               <div className="grid gap-8 sm:grid-cols-2">
                 <Field label="Preferred dates (optional)">
                   <input value={form.dates} onChange={set('dates')} className="input-luxe" placeholder="e.g. 12 – 15 March, or flexible" />
@@ -80,9 +78,9 @@ Message: ${form.notes || '-'}`
               </div>
             </Step>
 
-            <Step n="02" title="Suite of interest">
+            <Step n="02" title={copy.step2}>
               <div className="grid gap-4 sm:grid-cols-2">
-                {[{ slug: 'any', name: 'Any suite', guests: 'Our hosts will suggest the best fit', image: images.villaDusk }, ...rooms].map((r) => (
+                {[{ slug: 'any', name: copy.anyRoomName, guests: copy.anyRoomText, image: copy.anyRoomImage }, ...rooms.filter((r) => r.slug)].map((r) => (
                   <label
                     key={r.slug}
                     className={`group relative flex cursor-pointer items-center gap-4 border p-3 transition-all ${form.room === r.slug ? 'border-terra-500 bg-terra-50' : 'border-ink/10 hover:border-terra-300'}`}
@@ -101,7 +99,7 @@ Message: ${form.notes || '-'}`
               </div>
             </Step>
 
-            <Step n="03" title="You may also enjoy">
+            <Step n="03" title={copy.step3}>
               <div className="flex flex-wrap gap-3">
                 {interests.map((x) => (
                   <button
@@ -116,7 +114,7 @@ Message: ${form.notes || '-'}`
               </div>
             </Step>
 
-            <Step n="04" title="Your details">
+            <Step n="04" title={copy.step4}>
               <div className="grid gap-8 sm:grid-cols-2">
                 <Field label="Full name"><input id="enq-name" value={form.name} onChange={set('name')} className="input-luxe" /></Field>
                 <Field label="Email"><input type="email" value={form.email} onChange={set('email')} className="input-luxe" /></Field>
@@ -139,7 +137,7 @@ Message: ${form.notes || '-'}`
               <div className="overflow-hidden border border-ink/10 bg-cream">
                 <AnimatePresence mode="wait">
                   <motion.div key={form.room} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5 }}>
-                    <Img src={room ? room.image : images.villaDusk} alt="" className="aspect-[16/10] w-full object-cover" />
+                    <Img src={room ? room.image : copy.anyRoomImage} alt="" className="aspect-[16/10] w-full object-cover" />
                   </motion.div>
                 </AnimatePresence>
                 <div className="p-6 sm:p-8">
@@ -170,8 +168,8 @@ Message: ${form.notes || '-'}`
                     </a>
                   </div>
                   <ul className="mt-6 space-y-2 text-xs text-ink-mute">
-                    {['Personal reply from our hosts', 'No payment needed to enquire', `Or call us on ${contact.phone}`].map((t) => (
-                      <li key={t} className="flex items-center gap-2"><Icon name="leaf" className="h-3.5 w-3.5 text-terra-500" />{t}</li>
+                    {lines(copy.perks).map((t, k) => (
+                      <li key={k} className="flex items-center gap-2"><Icon name="leaf" className="h-3.5 w-3.5 text-terra-500" />{fill(t, contact)}</li>
                     ))}
                   </ul>
                 </div>

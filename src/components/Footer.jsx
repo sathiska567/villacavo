@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import ArchMark from './ArchMark'
 import { Leaf } from './Splash'
 import { Fireflies } from './magic'
-import { navLinks, contact } from '../data/site'
+import { useContent } from '../lib/content'
 
 export const socialIcons = {
   facebook: {
@@ -20,6 +20,7 @@ export const socialIcons = {
 }
 
 export default function Footer() {
+  const { navLinks, contact, site } = useContent()
   return (
     <footer className="relative overflow-hidden bg-terra-800 text-white">
       <ArchMark
@@ -39,19 +40,19 @@ export default function Footer() {
             </div>
           </div>
           <p className="mt-6 max-w-sm font-display text-xl italic leading-relaxed text-white/80">
-            A luxury hill-country retreat in Haputale, Sri Lanka — beneath the misty peaks.
+            {site.footerTagline}
           </p>
         </div>
 
         <div className="md:col-span-3">
           <p className="font-caps text-[11px] tracking-[0.4em] text-terra-200">Explore</p>
           <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 md:grid-cols-1">
-            {navLinks.map((l) => (
+            {navLinks.filter((l) => !l.hidden).map((l) => (
               <li key={l.to}>
                 <Link to={l.to} className="link-underline text-sm text-white/80 hover:text-white">{l.label}</Link>
               </li>
             ))}
-            <li><Link to="/book" className="link-underline text-sm text-white/80 hover:text-white">Enquiries</Link></li>
+            <li><Link to="/book" className="link-underline text-sm text-white/80 hover:text-white">{site.footerEnquiriesLabel}</Link></li>
           </ul>
         </div>
 
@@ -64,7 +65,7 @@ export default function Footer() {
             <p>Check-in {contact.checkIn} · Check-out {contact.checkOut}</p>
           </address>
           <div className="mt-8 flex gap-3">
-            {Object.entries(contact.social).map(([k, href]) => (
+            {Object.entries(contact.social).filter(([k, href]) => href && socialIcons[k]).map(([k, href]) => (
               <a
                 key={k}
                 href={href}
@@ -85,10 +86,10 @@ export default function Footer() {
 
       <div className="relative border-t border-white/10">
         <div className="container-luxe flex flex-col items-center justify-between gap-3 py-6 text-xs text-white/50 sm:flex-row">
-          <p>© {new Date().getFullYear()} Villa Cavo, Haputale. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {site.copyright}</p>
           <p className="flex items-center gap-2 font-caps tracking-[0.3em]">
             <svg viewBox="0 0 24 24" className="h-4 w-4 text-terra-300"><Leaf /></svg>
-            Beneath the misty peaks
+            {site.footerMotto}
           </p>
         </div>
       </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Logo from './Logo'
-import { navLinks, contact } from '../data/site'
+import { useContent } from '../lib/content'
 import { lockScroll } from '../lib/scroll'
 import ArchMark from './ArchMark'
 import { Fireflies } from './magic'
@@ -13,6 +13,8 @@ const easeInOut = [0.76, 0, 0.24, 1]
 /** Full-screen mobile menu: a terracotta arch rises from the bottom of the screen */
 function MobileMenu({ onClose }) {
   const { pathname } = useLocation()
+  const { navLinks: allLinks, contact, site } = useContent()
+  const navLinks = allLinks.filter((l) => !l.hidden)
   return (
     <motion.div
       className="fixed inset-0 z-[60] overflow-hidden bg-gradient-to-b from-terra-700 via-terra-800 to-terra-900 text-white"
@@ -112,7 +114,7 @@ function MobileMenu({ onClose }) {
             to="/book"
             className="btn w-full bg-white text-terra-700 hover:bg-terra-100"
           >
-            Make an enquiry
+            {site.menuButtonLabel}
           </Link>
           <div className="mt-6 flex items-end justify-between gap-4">
             <div className="space-y-1 text-sm text-white/75">
@@ -120,7 +122,7 @@ function MobileMenu({ onClose }) {
               <a className="block hover:text-white" href={`mailto:${contact.email}`}>{contact.email}</a>
             </div>
             <div className="flex gap-2">
-              {Object.entries(contact.social).map(([k, href]) => (
+              {Object.entries(contact.social).filter(([k, href]) => href && socialIcons[k]).map(([k, href]) => (
                 <a
                   key={k}
                   href={href}
@@ -146,6 +148,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
+  const { navLinks: allLinks, site } = useContent()
+  const navLinks = allLinks.filter((l) => !l.hidden)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -174,7 +178,7 @@ export default function Navbar() {
           <Logo light={light} />
 
           <nav className="hidden items-center gap-8 xl:flex" aria-label="Main">
-            {navLinks.slice(1).map((l) => (
+            {navLinks.filter((l) => l.to !== '/').map((l) => (
               <NavLink
                 key={l.to}
                 to={l.to}
@@ -191,7 +195,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
             <Link to="/book" className="btn-primary hidden !px-6 !py-3 sm:inline-flex">
-              Enquire
+              {site.navButtonLabel}
             </Link>
             <button
               onClick={() => setOpen(true)}

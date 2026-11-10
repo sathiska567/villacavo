@@ -1,3 +1,9 @@
 node_modules
 dist
 .DS_Store
+.admin-data
+.vercel
+
+
+# admin panel: separate git repo (villacavo-admin), never part of the website
+admin/

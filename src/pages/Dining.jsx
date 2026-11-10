@@ -1,129 +1,115 @@
-import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { PageHero, Reveal, Img, SectionHeading, CurtainImg, ParallaxImg, MaskText, Ornament, CtaBand, Eyebrow, ease } from '../components/ui'
-import { images } from '../data/site'
+import { Fireflies } from '../components/magic'
+import { usePage, lines } from '../lib/content'
 
-const menus = {
-  Breakfast: [
-    { n: 'String Hoppers & Kiri Hodi', d: 'Steamed rice noodles, coconut milk gravy, pol sambol' },
-    { n: 'Egg Hoppers', d: 'Crisp bowl-shaped pancakes with a soft egg and lunu miris' },
-    { n: 'Highland Fruit Platter', d: 'Passion fruit, papaya, rambutan & mangosteen in season' },
-    { n: 'Estate Breakfast', d: 'Free-range eggs your way, sourdough, garden herbs & tomatoes' },
-  ],
-  'High Tea': [
-    { n: 'Single-Estate Uva Tea', d: 'Brewed tableside from leaves grown on neighbouring slopes' },
-    { n: 'Finger Sandwiches', d: 'Cucumber & mint, egg & cress, spiced chicken' },
-    { n: 'Scones', d: 'Warm scones with clotted cream & Adisham jams' },
-    { n: 'Sri Lankan Sweets', d: 'Kavum, kokis and love cake' },
-  ],
-  Dinner: [
-    { n: 'Rice & Curry Feast', d: 'Seven curries — jackfruit, dhal, beetroot, chicken & more' },
-    { n: 'Black Pork Curry', d: 'Slow-cooked in roasted spices & goraka' },
-    { n: 'Highland Lamb', d: 'Herb-crusted, with roasted root vegetables' },
-    { n: 'Watalappan', d: 'Jaggery & cardamom custard with cashew' },
-  ],
-}
+const pad = (n) => String(n).padStart(2, '0')
 
 export default function Dining() {
-  const [tab, setTab] = useState('Breakfast')
+  const { hero, care, venues, quote, cta } = usePage('dining')
+  const items = (care.items || []).filter((it) => it.title || it.text)
   return (
     <>
-      <PageHero
-        eyebrow="Dining"
-        title={['A table set', 'above the clouds']}
-        text="Heritage recipes, highland produce and the warmth of a family kitchen. Every meal at Villa Cavo is a celebration of Sri Lanka."
-        image={images.dining}
-      />
+      {!hero.hidden && <PageHero eyebrow={hero.eyebrow} title={lines(hero.title)} text={hero.text} image={hero.image} />}
 
-      <section className="relative overflow-hidden bg-white py-24 sm:py-32">
-        <div className="container-luxe grid items-center gap-16 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <SectionHeading
-              eyebrow="Our Kitchen"
-              title={['From garden', 'to table']}
-              text="Our chef draws on recipes passed down through generations, cooking with vegetables from our garden, spices from local markets and tea from the estates around us. Menus change with the seasons — and with your wishes."
-            />
+      {/* Private chef, personal butler & village cooking */}
+      {!care.hidden && (
+        <section className="relative overflow-hidden bg-white pt-24 sm:pt-32">
+          <div className="container-luxe text-center">
+            <Reveal><Eyebrow center>{care.eyebrow}</Eyebrow></Reveal>
+            <MaskText lines={lines(care.title)} className="mx-auto mt-5 max-w-4xl text-4xl leading-[1.1] text-ink sm:text-5xl lg:text-6xl" />
+            <Ornament className="mt-8" />
           </div>
-          <div className="grid grid-cols-2 gap-4 lg:col-span-7">
-            <CurtainImg src={images.dining} alt="Candlelit dinner table" className="aspect-[3/4]" />
-            <CurtainImg src={images.jacuzzi} alt="Sunset drinks on the deck" className="arch mt-16 aspect-[3/4]" delay={0.2} />
-          </div>
-        </div>
-      </section>
-
-      {/* Menu tabs */}
-      <section className="bg-terra-500 py-24 sm:py-32">
-        <div className="container-luxe max-w-4xl">
-          <div className="text-center">
-            <Reveal><Eyebrow center light>Sample Menu</Eyebrow></Reveal>
-            <MaskText lines={['A taste of', 'the highlands']} className="mt-5 text-4xl leading-[1.05] text-white sm:text-6xl" />
-            <Ornament light className="mt-8" />
-          </div>
-
-          <div className="mt-12 flex justify-center gap-8 border-b border-white/20">
-            {Object.keys(menus).map((t) => (
-              <button key={t} onClick={() => setTab(t)} className={`relative pb-4 font-caps text-[12px] tracking-[0.3em] ${tab === t ? 'text-white' : 'text-white/60 hover:text-white'}`}>
-                {t}
-                {tab === t && <motion.span layoutId="menu-line" className="absolute -bottom-px left-0 right-0 h-px bg-white" />}
-              </button>
+          <div className="mt-16 sm:mt-20">
+            {items.map((it, i) => (
+              <CareRow key={i} item={it} i={i} />
             ))}
           </div>
-
-          <AnimatePresence mode="wait">
-            <motion.ul
-              key={tab}
-              className="mt-12 space-y-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5, ease }}
-            >
-              {menus[tab].map((m) => (
-                <li key={m.n}>
-                  <div className="flex items-baseline gap-4">
-                    <h3 className="text-2xl text-white sm:text-3xl">{m.n}</h3>
-                    <span className="flex-1 border-b border-dotted border-white/30" />
-                  </div>
-                  <p className="mt-1 font-display text-lg italic text-white/70">{m.d}</p>
-                </li>
-              ))}
-            </motion.ul>
-          </AnimatePresence>
-          <p className="mt-12 text-center text-sm text-white/70">Dietary requirements gladly accommodated — vegetarian, vegan & gluten-free menus available.</p>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Dining venues */}
-      <section className="relative overflow-hidden bg-white py-24 sm:py-32">
-        <div className="container-luxe">
-          <SectionHeading center eyebrow="Where to dine" title="Every corner, a table" />
-          <div className="mt-16 grid gap-10 md:grid-cols-3">
-            {[
-              { t: 'The Fireside Room', d: 'Candlelit dinners beside the crackling hearth on cool highland nights.', img: images.dining },
-              { t: 'The Rooftop Lounge', d: 'Breakfast and high tea in the open air, with mist rising from the valley.', img: images.rooftopBar },
-              { t: 'The Ridge Terrace', d: 'Private sunset dinners for two, high above the Haputale gap.', img: images.rooftopSunset },
-            ].map((v, i) => (
-              <Reveal key={v.t} delay={i * 0.12} className="group">
-                <div className="overflow-hidden">
-                  <Img src={v.img} alt={v.t} className="aspect-[4/5] w-full object-cover transition-transform duration-[1.6s] group-hover:scale-110" />
-                </div>
-                <h3 className="mt-6 text-3xl text-ink">{v.t}</h3>
-                <p className="mt-3 text-[16px] leading-relaxed text-ink-soft">{v.d}</p>
-              </Reveal>
-            ))}
+      {!venues.hidden && (
+        <section className="relative overflow-hidden bg-white py-24 sm:py-32">
+          <div className="container-luxe">
+            <SectionHeading center eyebrow={venues.eyebrow} title={venues.title} />
+            <div className="mt-16 grid gap-10 md:grid-cols-3">
+              {(venues.items || []).map((v, i) => (
+                <Reveal key={i} delay={i * 0.12} className="group">
+                  <div className="overflow-hidden">
+                    <Img src={v.image} alt={v.title} className="aspect-[4/5] w-full object-cover transition-transform duration-[1.6s] group-hover:scale-110" />
+                  </div>
+                  <h3 className="mt-6 text-3xl text-ink">{v.title}</h3>
+                  <p className="mt-3 text-[16px] leading-relaxed text-ink-soft">{v.text}</p>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="relative">
-        <ParallaxImg src={images.aerial} alt="" className="h-[60vh] min-h-[400px]" />
-        <div className="absolute inset-0 bg-ink/45" />
-        <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-white">
-          <MaskText lines={['“Tea is the soul', 'of these hills.”']} className="font-display text-4xl italic sm:text-6xl" />
-        </div>
-      </section>
+      {!quote.hidden && (
+        <section className="relative">
+          <ParallaxImg src={quote.image} alt="" className="h-[60vh] min-h-[400px]" />
+          <div className="absolute inset-0 bg-ink/45" />
+          <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-white">
+            <MaskText lines={lines(quote.lines)} className="font-display text-4xl italic sm:text-6xl" />
+          </div>
+        </section>
+      )}
 
-      <CtaBand image={images.rooftopBar} title={['Plan a', 'private dinner']} />
+      <CtaBand data={cta} />
     </>
+  )
+}
+
+function CareRow({ item, i }) {
+  const flip = i % 2 === 1
+  const dark = !!item.dark
+  return (
+    <div className={`relative overflow-hidden ${dark ? 'bg-ink py-24 text-white sm:py-32' : 'py-16 sm:py-24'}`}>
+      {dark && (
+        <>
+          {/* warm glow of a wood fire, with embers drifting up */}
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute -bottom-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-terra-500/30 blur-3xl"
+            animate={{ opacity: [0.55, 1, 0.7, 0.95, 0.55], scale: [1, 1.06, 0.98, 1.04, 1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <Fireflies count={26} color="rgba(255,170,90,0.95)" />
+        </>
+      )}
+      <div className="container-luxe relative grid items-center gap-12 lg:grid-cols-12 lg:gap-20">
+        <div className={`relative lg:col-span-6 ${flip ? 'lg:order-2' : ''}`}>
+          <CurtainImg src={item.image} alt={item.alt || item.title} className={`aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5] ${i === 1 ? 'arch' : ''}`} />
+          <motion.span
+            aria-hidden
+            className={`absolute -top-14 z-10 font-display text-[90px] leading-none sm:-top-20 sm:text-[130px] ${flip ? 'right-0' : 'left-0'} ${dark ? 'text-white/25' : 'text-terra-500/30'}`}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, delay: 0.5, ease }}
+          >
+            {pad(i + 1)}
+          </motion.span>
+        </div>
+        <div className={`lg:col-span-6 ${flip ? 'lg:order-1' : ''}`}>
+          <Reveal><Eyebrow light={dark}>{item.label}</Eyebrow></Reveal>
+          <MaskText lines={lines(item.title)} className={`mt-5 text-4xl leading-[1.08] sm:text-5xl ${dark ? 'text-white' : 'text-ink'}`} />
+          <Reveal delay={0.2}>
+            <motion.span
+              aria-hidden
+              className={`mt-8 block h-px w-24 origin-left ${dark ? 'bg-terra-200' : 'bg-terra-500'}`}
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.3, ease }}
+            />
+            <p className={`mt-8 text-[17px] leading-relaxed ${dark ? 'text-white/80' : 'text-ink-soft'}`}>{item.text}</p>
+          </Reveal>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -19,6 +19,8 @@ const paths = {
   leaf: 'M5 19c0-8 6-14 14-14 0 8-6 14-14 14zM5 19l7-7',
 }
 
+export const iconNames = Object.keys(paths)
+
 export default function Icon({ name, className = 'h-6 w-6' }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

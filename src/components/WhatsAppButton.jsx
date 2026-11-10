@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
-import { contact } from '../data/site'
+import { useContent } from '../lib/content'
 
 export default function WhatsAppButton() {
+  const { contact } = useContent()
   return (
     <motion.a
       href={`https://wa.me/${contact.whatsapp}`}

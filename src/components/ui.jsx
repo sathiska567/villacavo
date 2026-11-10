@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import ArchMark from './ArchMark'
 import { Leaf } from './Splash'
 import { Birds, Magnetic, Mist } from './magic'
-import { contact } from '../data/site'
+import { useContent, lines } from '../lib/content'
 
 export const ease = [0.22, 1, 0.36, 1]
 
@@ -206,7 +206,7 @@ export function PageHero({ eyebrow, title, text, image, images: pair, square = f
           {pair ? (
             <div className="grid grid-cols-2 gap-3 sm:gap-5">
               {pair.map((src, i) => (
-                <div key={src} className="relative aspect-square overflow-hidden shadow-[0_30px_60px_-25px_rgba(63,25,11,0.45)]">
+                <div key={i} className="relative aspect-square overflow-hidden shadow-[0_30px_60px_-25px_rgba(63,25,11,0.45)]">
                   <motion.div
                     className="h-full w-full"
                     initial={{ clipPath: 'inset(0 0 0 100%)', scale: 1.25, x: 60 }}
@@ -238,8 +238,15 @@ export function PageHero({ eyebrow, title, text, image, images: pair, square = f
   )
 }
 
-/** Full-width booking call-to-action band */
-export function CtaBand({ image, title = ['Your escape', 'above the clouds'], text }) {
+/** Full-width booking call-to-action band. `data` is a page's cta section;
+ *  an empty title/text falls back to the site-wide enquiry band text. */
+export function CtaBand({ data = {} }) {
+  const { site, contact } = useContent()
+  if (data.hidden) return null
+  const cta = site.cta || {}
+  const title = lines(data.title).length ? lines(data.title) : lines(cta.title)
+  const text = data.text || cta.text
+  const image = data.image
   return (
     <section className="relative">
       <ParallaxImg src={image} alt="" className="h-[80vh] min-h-[520px]" strength={120} />
@@ -249,16 +256,14 @@ export function CtaBand({ image, title = ['Your escape', 'above the clouds'], te
       <div className="absolute inset-0 flex items-center">
         <div className="container-luxe text-center text-white">
           <Reveal>
-            <p className="font-caps text-[12px] tracking-luxe text-terra-100">Enquiries</p>
+            <p className="font-caps text-[12px] tracking-luxe text-terra-100">{cta.eyebrow}</p>
           </Reveal>
           <MaskText lines={title} className="mt-6 text-5xl italic leading-[1] sm:text-7xl lg:text-8xl" />
           <Reveal delay={0.3}>
-            <p className="mx-auto mt-6 max-w-md text-white/85">
-              {text || 'Limited suites, limitless views. Send us an enquiry by WhatsApp or email and our hosts will reply personally.'}
-            </p>
+            <p className="mx-auto mt-6 max-w-md text-white/85">{text}</p>
             <div className="mx-auto mt-10 flex max-w-xs flex-col gap-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:justify-center">
-              <Magnetic className="w-full sm:w-auto"><Link to="/book" className="btn-primary w-full">Make an enquiry</Link></Magnetic>
-              <Magnetic className="w-full sm:w-auto"><a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer" className="btn-ghost w-full">WhatsApp us</a></Magnetic>
+              <Magnetic className="w-full sm:w-auto"><Link to="/book" className="btn-primary w-full">{cta.primaryLabel}</Link></Magnetic>
+              <Magnetic className="w-full sm:w-auto"><a href={`https://wa.me/${contact.whatsapp}`} target="_blank" rel="noreferrer" className="btn-ghost w-full">{cta.secondaryLabel}</a></Magnetic>
             </div>
           </Reveal>
         </div>

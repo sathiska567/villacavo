@@ -10,6 +10,7 @@ import PageTransition from './components/PageTransition'
 import { SplashContext } from './context'
 import { Cursor, LeafBurst, ScrollProgress } from './components/magic'
 import { initSmoothScroll, lockScroll, scrollToTop } from './lib/scroll'
+import { ContentProvider, exitPreview, useContent, usePreviewMode } from './lib/content'
 
 import Home from './pages/Home'
 import About from './pages/About'
@@ -34,7 +35,17 @@ const routes = [
 ]
 
 export default function App() {
+  return (
+    <ContentProvider>
+      <Site />
+    </ContentProvider>
+  )
+}
+
+function Site() {
   const location = useLocation()
+  const { site } = useContent()
+  const preview = usePreviewMode()
   const [showSplash, setShowSplash] = useState(true)
   const endSplash = useCallback(() => setShowSplash(false), [])
 
@@ -59,10 +70,17 @@ export default function App() {
         </Routes>
       </AnimatePresence>
       <Footer />
-      <WhatsAppButton />
+      {site.showWhatsappButton !== false && <WhatsAppButton />}
       <ScrollProgress />
       <LeafBurst />
       <Cursor />
+      {preview && (
+        <div className="fixed bottom-4 left-1/2 z-[95] flex -translate-x-1/2 items-center gap-3 rounded-full bg-ink px-5 py-2.5 text-xs text-white shadow-2xl">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />
+          Preview of unpublished changes
+          <button onClick={exitPreview} className="rounded-full bg-white/15 px-3 py-1 hover:bg-white/25">Exit</button>
+        </div>
+      )}
     </SplashContext.Provider>
   )
 }
