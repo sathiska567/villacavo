@@ -45,7 +45,7 @@ export default function Footer() {
         </div>
 
         <div className="md:col-span-3">
-          <p className="font-caps text-[11px] tracking-[0.4em] text-terra-200">Explore</p>
+          <p className="font-caps text-[11px] tracking-[0.4em] text-terra-200">{site.footerExploreLabel}</p>
           <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 md:grid-cols-1">
             {navLinks.filter((l) => !l.hidden).map((l) => (
               <li key={l.to}>
@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         <div className="md:col-span-4">
-          <p className="font-caps text-[11px] tracking-[0.4em] text-terra-200">Visit</p>
+          <p className="font-caps text-[11px] tracking-[0.4em] text-terra-200">{site.footerVisitLabel}</p>
           <address className="mt-6 space-y-3 text-sm not-italic leading-relaxed text-white/80">
             <p>{contact.address}</p>
             <p><a className="hover:text-white" href={`tel:${contact.phone.replace(/\s/g, '')}`}>{contact.phone}</a></p>

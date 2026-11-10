@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { PageHero, Reveal, SectionHeading, Eyebrow, ease } from '../components/ui'
 import Icon from '../components/Icon'
-import { useContent, usePage, lines } from '../lib/content'
+import { useContent, usePage, lines, fill } from '../lib/content'
 
 export default function Contact() {
   const { contact } = useContent()
@@ -66,21 +66,21 @@ export default function Contact() {
             <AnimatePresence mode="wait">
               {sent ? (
                 <motion.div key="ok" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-12 border border-terra-500/30 bg-terra-50 p-10">
-                  <h3 className="text-3xl text-ink">Thank you, {form.name.split(' ')[0] || 'friend'}.</h3>
+                  <h3 className="text-3xl text-ink">{fill(formCopy.thanksTitle, { name: form.name.split(' ')[0] || 'friend' })}</h3>
                   <p className="mt-3 text-[16px] text-ink-soft">{thanksBefore}{formCopy.thanksText?.includes('{email}') && <a className="text-terra-500" href={`mailto:${contact.email}`}>{contact.email}</a>}{thanksAfter}</p>
-                  <button onClick={() => setSent(false)} className="btn-outline mt-8">Send another</button>
+                  <button onClick={() => setSent(false)} className="btn-outline mt-8">{formCopy.sendAnotherLabel}</button>
                 </motion.div>
               ) : (
                 <motion.form key="form" onSubmit={submit} className="mt-12 grid gap-8 sm:grid-cols-2" exit={{ opacity: 0 }}>
-                  <Field label="Full name" className="sm:col-span-1"><input required value={form.name} onChange={set('name')} className="input-luxe" placeholder="Your name" /></Field>
-                  <Field label="Email"><input required type="email" value={form.email} onChange={set('email')} className="input-luxe" placeholder="you@example.com" /></Field>
-                  <Field label="Phone"><input value={form.phone} onChange={set('phone')} className="input-luxe" placeholder="+94 ..." /></Field>
-                  <Field label="Subject">
+                  <Field label={formCopy.nameLabel} className="sm:col-span-1"><input required value={form.name} onChange={set('name')} className="input-luxe" placeholder={formCopy.namePlaceholder} /></Field>
+                  <Field label={formCopy.emailLabel}><input required type="email" value={form.email} onChange={set('email')} className="input-luxe" placeholder={formCopy.emailPlaceholder} /></Field>
+                  <Field label={formCopy.phoneLabel}><input value={form.phone} onChange={set('phone')} className="input-luxe" placeholder={formCopy.phonePlaceholder} /></Field>
+                  <Field label={formCopy.subjectLabel}>
                     <select value={form.subject} onChange={set('subject')} className="input-luxe">
                       {subjects.map((s) => <option key={s}>{s}</option>)}
                     </select>
                   </Field>
-                  <Field label="Message" className="sm:col-span-2"><textarea required rows={5} value={form.message} onChange={set('message')} className="input-luxe resize-none" placeholder="How can we help?" /></Field>
+                  <Field label={formCopy.messageLabel} className="sm:col-span-2"><textarea required rows={5} value={form.message} onChange={set('message')} className="input-luxe resize-none" placeholder={formCopy.messagePlaceholder} /></Field>
                   <div className="sm:col-span-2">
                     <button className="btn-primary w-full sm:w-auto">{formCopy.buttonLabel}</button>
                   </div>

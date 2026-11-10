@@ -27,11 +27,14 @@ export default function Booking() {
   const toggle = (x) =>
     setForm({ ...form, interests: form.interests.includes(x) ? form.interests.filter((e) => e !== x) : [...form.interests, x] })
 
-  const room = rooms.find((r) => r.slug && r.slug === form.room)
+  // The villa is booked as a whole; the suite step only shows if switched on in the admin.
+  const showRooms = !!copy.showRoomStep
+  const room = showRooms ? rooms.find((r) => r.slug && r.slug === form.room) : null
+  const steps = showRooms ? ['01', '02', '03', '04'] : ['01', null, '02', '03']
   const message = `Hello Villa Cavo, I would like to make an enquiry.
-Suite: ${room ? room.name : copy.anyRoomName}
-Guests: ${form.guests}
-Preferred dates: ${form.dates || 'Flexible'}
+${showRooms ? `Suite: ${room ? room.name : copy.anyRoomName}
+` : ''}Guests: ${form.guests}
+Preferred dates: ${form.dates || copy.flexibleText}
 Interested in: ${form.interests.join(', ') || '-'}
 Name: ${form.name}
 Email: ${form.email || '-'}
@@ -40,12 +43,12 @@ Country: ${form.country || '-'}
 Message: ${form.notes || '-'}`
 
   const whatsappUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(message)}`
-  const mailUrl = `mailto:${contact.email}?subject=${encodeURIComponent('Enquiry — ' + (room ? room.name : 'Villa Cavo'))}&body=${encodeURIComponent(message)}`
+  const mailUrl = `mailto:${contact.email}?subject=${encodeURIComponent('Enquiry — ' + (room ? room.name : copy.summaryTitle))}&body=${encodeURIComponent(message)}`
 
   const send = (e) => {
     if (!form.name.trim()) {
       e.preventDefault()
-      setError('Please add your name so our hosts know who to reply to.')
+      setError(copy.nameError)
       document.getElementById('enq-name')?.focus()
       return
     }
@@ -65,20 +68,21 @@ Message: ${form.notes || '-'}`
 
         <form onSubmit={(e) => e.preventDefault()} className="mt-16 grid gap-16 lg:grid-cols-12">
           <div className="space-y-14 lg:col-span-7">
-            <Step n="01" title={copy.step1}>
+            <Step n={steps[0]} title={copy.step1}>
               <div className="grid gap-8 sm:grid-cols-2">
-                <Field label="Preferred dates (optional)">
-                  <input value={form.dates} onChange={set('dates')} className="input-luxe" placeholder="e.g. 12 – 15 March, or flexible" />
+                <Field label={copy.datesLabel}>
+                  <input value={form.dates} onChange={set('dates')} className="input-luxe" placeholder={copy.datesPlaceholder} />
                 </Field>
-                <Field label="Guests">
+                <Field label={copy.guestsLabel}>
                   <select value={form.guests} onChange={set('guests')} className="input-luxe">
-                    {['1', '2', '3', '4', '5', '6', '7+'].map((n) => <option key={n} value={n}>{n}</option>)}
+                    {lines(copy.guestOptions).map((n) => <option key={n} value={n}>{n}</option>)}
                   </select>
                 </Field>
               </div>
             </Step>
 
-            <Step n="02" title={copy.step2}>
+            {showRooms && (
+            <Step n={steps[1]} title={copy.step2}>
               <div className="grid gap-4 sm:grid-cols-2">
                 {[{ slug: 'any', name: copy.anyRoomName, guests: copy.anyRoomText, image: copy.anyRoomImage }, ...rooms.filter((r) => r.slug)].map((r) => (
                   <label
@@ -98,8 +102,9 @@ Message: ${form.notes || '-'}`
                 ))}
               </div>
             </Step>
+            )}
 
-            <Step n="03" title={copy.step3}>
+            <Step n={steps[2]} title={copy.step3}>
               <div className="flex flex-wrap gap-3">
                 {interests.map((x) => (
                   <button
@@ -114,19 +119,19 @@ Message: ${form.notes || '-'}`
               </div>
             </Step>
 
-            <Step n="04" title={copy.step4}>
+            <Step n={steps[3]} title={copy.step4}>
               <div className="grid gap-8 sm:grid-cols-2">
-                <Field label="Full name"><input id="enq-name" value={form.name} onChange={set('name')} className="input-luxe" /></Field>
-                <Field label="Email"><input type="email" value={form.email} onChange={set('email')} className="input-luxe" /></Field>
-                <Field label="Phone / WhatsApp"><input value={form.phone} onChange={set('phone')} className="input-luxe" /></Field>
-                <Field label="Country"><input value={form.country} onChange={set('country')} className="input-luxe" /></Field>
-                <Field label="Message" className="sm:col-span-2">
-                  <textarea rows={3} value={form.notes} onChange={set('notes')} className="input-luxe resize-none" placeholder="Questions, celebrations, dietary needs, arrival plans…" />
+                <Field label={copy.nameLabel}><input id="enq-name" value={form.name} onChange={set('name')} className="input-luxe" /></Field>
+                <Field label={copy.emailLabel}><input type="email" value={form.email} onChange={set('email')} className="input-luxe" /></Field>
+                <Field label={copy.phoneLabel}><input value={form.phone} onChange={set('phone')} className="input-luxe" /></Field>
+                <Field label={copy.countryLabel}><input value={form.country} onChange={set('country')} className="input-luxe" /></Field>
+                <Field label={copy.messageLabel} className="sm:col-span-2">
+                  <textarea rows={3} value={form.notes} onChange={set('notes')} className="input-luxe resize-none" placeholder={copy.messagePlaceholder} />
                 </Field>
               </div>
               {error && <p className="mt-8 text-sm text-terra-600">{error}</p>}
               <a href={mailUrl} onClick={send} className="btn-primary mt-10 w-full sm:w-auto">
-                <Icon name="mail" className="h-4 w-4" /> Send to email
+                <Icon name="mail" className="h-4 w-4" /> {copy.sendEmailLabel}
               </a>
             </Step>
           </div>
@@ -141,12 +146,12 @@ Message: ${form.notes || '-'}`
                   </motion.div>
                 </AnimatePresence>
                 <div className="p-6 sm:p-8">
-                  <p className="eyebrow">Your enquiry</p>
-                  <h3 className="mt-3 text-3xl text-ink">{room ? room.name : 'Villa Cavo'}</h3>
+                  <p className="eyebrow">{copy.summaryLabel}</p>
+                  <h3 className="mt-3 text-3xl text-ink">{room ? room.name : copy.summaryTitle}</h3>
                   <dl className="mt-6 space-y-3 border-t border-ink/10 pt-6 text-sm">
                     {[
-                      ['Dates', form.dates || 'Flexible'],
-                      ['Guests', form.guests],
+                      [copy.summaryDatesLabel, form.dates || copy.flexibleText],
+                      [copy.summaryGuestsLabel, form.guests],
                     ].map(([k, v]) => (
                       <div key={k} className="flex justify-between gap-4">
                         <dt className="text-ink-mute">{k}</dt>
@@ -155,16 +160,16 @@ Message: ${form.notes || '-'}`
                     ))}
                   </dl>
                   {form.interests.length > 0 && (
-                    <p className="mt-4 text-xs leading-relaxed text-ink-soft">Interested in: {form.interests.join(', ')}</p>
+                    <p className="mt-4 text-xs leading-relaxed text-ink-soft">{copy.interestedLabel}: {form.interests.join(', ')}</p>
                   )}
 
                   {error && <p className="mt-6 text-sm text-terra-600">{error}</p>}
                   <div className="mt-8 grid gap-3">
                     <a href={whatsappUrl} onClick={send} target="_blank" rel="noreferrer" className="btn-primary w-full">
-                      <Icon name="phone" className="h-4 w-4" /> Send via WhatsApp
+                      <Icon name="phone" className="h-4 w-4" /> {copy.whatsappButtonLabel}
                     </a>
                     <a href={mailUrl} onClick={send} className="btn-outline w-full">
-                      <Icon name="mail" className="h-4 w-4" /> Send via email
+                      <Icon name="mail" className="h-4 w-4" /> {copy.emailButtonLabel}
                     </a>
                   </div>
                   <ul className="mt-6 space-y-2 text-xs text-ink-mute">
