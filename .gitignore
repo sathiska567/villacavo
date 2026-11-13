@@ -7,3 +7,6 @@ dist
 
 # admin panel: separate git repo (villacavo-admin), never part of the website
 admin/
+
+# backend: separate git repo (villacavo-backend), never part of the website
+backend/
